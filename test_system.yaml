@@ -1,0 +1,44 @@
+# Definition of a set of chemical reactions with external fluctuations.
+# format: YAML Ain't Markup Language `www.yaml.org`
+
+# ---------------------------
+# Chemical network components
+# ---------------------------
+concentrations: # e.g. phi1, ...
+- phi
+
+# ------------------------------
+# Extrinsic stochastic variables
+# ------------------------------
+# (1 + eta1) is a log-normally distributed
+# variable with the autocorrelation function
+# exp( epsilon1**2 * exp(- K1 * |t - t'|) )
+extrinsic_variables: # e.g. eta1, ...
+- eta
+
+normal_variances: # optional, e.g. epsilon1**2, ...
+- epsilon**2
+
+inverse_correlation_times: # optional, e.g. K1, ...
+- K
+
+# ---------------------
+# Stoichiometric matrix
+# ---------------------
+stoichiometric_matrix:
+- [1, -1]
+
+# ----------------------------
+# Macroscopic transition rates
+# ----------------------------
+# fluctuations must be inserted as (1 + eta),
+# e.g. k --> k*(1 + eta)
+transition_rates:
+- l
+- k*(1 + eta)*phi
+
+# ----------------------------
+# Optional non-default symbols
+# ----------------------------
+system_size: Omega # optional, default: Omega
+frequency: omega # optional, default: omega

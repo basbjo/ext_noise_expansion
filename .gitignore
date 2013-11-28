@@ -1,0 +1,8 @@
+*.pyc
+
+# Packages
+build
+__pycache__
+
+# Documentation
+ext_noise_expansion.html
