@@ -60,9 +60,9 @@ Numerical evaluation:
     [-k*(eta + 1)]
 """
 
-from sympy import Symbol, Matrix, eye, factorial, I, pi, sympify
+from sympy import Symbol, Matrix, eye, zeros, factorial, I, pi, sympify
 from sympy.core.sympify import SympifyError
-from .tools_sympy import diag, zeros, matsimp, taylor_coeff, def_nprint
+from .tools_sympy import diag, matsimp, taylor_coeff, def_nprint
 from .tools_sympy import lyapunov_equation, lyapunov_equation_2, def_N
 from .tools_objects import DefinitionError, EigenvalueError, DummySymbol
 from .tools_universal import multinomial_coefficient

@@ -82,13 +82,11 @@ class test(Command):
         testmod(ext_noise_expansion.sum_parsing)
         testmod(ext_noise_expansion.tools_objects)
         testmod(ext_noise_expansion.tools_universal)
+        testmod(ext_noise_expansion.tools_sympy)
         if sys.version_info[0] == 3:
             testfile('ext_noise_expansion.rst', module_relative=False)
-            testmod(ext_noise_expansion.tools_sympy)
         elif sys.version_info[0] == 2:
             testfile('ext_noise_expansion_python2.rst', module_relative=False)
-            testfile('ext_noise_expansion/tools_sympy_python2_doctest.rst',
-                    module_relative=False)
 
 class clean(Command):
     """Cleans *.pyc and __pycache__.

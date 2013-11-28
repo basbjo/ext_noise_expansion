@@ -5,7 +5,7 @@ Linear noise approximation with slow extrinsic fluctuations.
 
 :Author:       Bjoern Bastian <basbjo at gmail dot com>
 :Version:      beta
-:Requirements: Python >= 2.7 / 3.x (recommended), sympy, yaml
+:Requirements: Python >= 2.7 / 3.x, sympy 0.7.3, yaml
 
 Files:
     - README.rst

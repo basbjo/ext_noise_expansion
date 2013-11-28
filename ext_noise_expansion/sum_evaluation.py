@@ -46,9 +46,9 @@ Several partial sums:
     specint_0 = -A[0]*C[0, 0]/(pi*Omega*(A[0]**2 + omega**2))
 """
 
-from sympy import factorial, Matrix, eye, Wild, factor, collect, Mul
+from sympy import factorial, Matrix, eye, zeros, Wild, factor, collect, Mul
 from .reaction_system import ReactionSystemBase
-from .tools_sympy import diag, zeros, matsimp, def_N
+from .tools_sympy import diag, matsimp, def_N
 from .tools_universal import merge_yield, sort_merge
 from . import sum_generation as generate
 from . import sum_parsing as parse

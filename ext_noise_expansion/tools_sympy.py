@@ -4,31 +4,11 @@
 Helper functions specific for symbolic python.
 """
 
-from sympy import Matrix, eye, Number, pprint, __version__
-from sympy import zeros as _zeros
+from sympy import Matrix, eye, Number, pprint
 from sympy.core.add import Add
 from sympy.ntheory.multinomial import multinomial_coefficients
 
 CHOP_IMAG = 1e-12
-
-#=========================================
-# sympy compatibility
-
-def zeros(*args):
-    """
-    compatibility wrapper for zeros
-
-    See
-    http://code.google.com/p/sympy/issues/detail?id=3381 for more info.
-
-    issue=3381, deprecated_since_version="0.7.2"
-    """
-    version_info = __version__.split('.')
-    if int(version_info[1]) < 7 or (
-            int(version_info[1]) == 7 and int(version_info[2]) < 2):
-        return _zeros(args)
-    else:
-        return _zeros(*args)
 
 #=========================================
 # matrices

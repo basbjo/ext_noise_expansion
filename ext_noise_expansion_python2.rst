@@ -47,12 +47,12 @@ A short example::
 
     >>> partial_sums(2, -1, 0, # maximum u for mean/variance/spectrum
     ...     rs, solver=simple_solve) #doctest: +NORMALIZE_WHITESPACE
-    {'specext_0': [0],
-     'specint_0': [l/(pi*Omega*(k**2 + omega**2))],
-     'spec_0': [l/(pi*Omega*(k**2 + omega**2))],
-     'mean_0': [l/k],
-     'mean_1': [epsilon**2*l/k + l/k],
-     'mean_2': [epsilon**4*l/(2*k) + epsilon**2*l/k + l/k]}
+    {'specext_0': Matrix([[0]]),
+     'specint_0': Matrix([[l/(pi*Omega*(k**2 + omega**2))]]),
+     'spec_0': Matrix([[l/(pi*Omega*(k**2 + omega**2))]]),
+     'mean_0': Matrix([[l/k]]),
+     'mean_1': Matrix([[epsilon**2*l/k + l/k]]),
+     'mean_2': Matrix([[epsilon**4*l/(2*k) + epsilon**2*l/k + l/k]])}
 
 
 The ReactionSystem class
@@ -67,7 +67,7 @@ System definition with a yaml file:
     >>> from ext_noise_expansion import ReactionSystem
     >>> rs1 = ReactionSystem.from_string(yaml_file='test_system.yaml')
     >>> print list(rs1.A), list(rs1.B), list(rs1.DM)
-    [-k*(eta + 1)] [(k*phi*(eta + 1) + l)**(1/2)] [k*phi*(eta + 1) + l]
+    [-k*(eta + 1)] [sqrt(k*phi*(eta + 1) + l)] [k*phi*(eta + 1) + l]
 
  Use ``string_parser()`` to check definition files.
  See ``test_system.yaml`` for an example definition.
@@ -98,7 +98,7 @@ Evaluation of the stationary state by means of a solver function::
     >>> from ext_noise_expansion import simple_solve
     >>> rs1.eval_at_phis(solver=simple_solve)
     >>> print list(rs1.A), list(rs1.B), list(rs1.DM), list(rs1.phis)
-    [-k*(eta + 1)] [2**(1/2)*l**(1/2)] [2*l] [l/(eta*k + k)]
+    [-k*(eta + 1)] [sqrt(2)*sqrt(l)] [2*l] [l/(k*(eta + 1))]
 
 External evaluation of the stationary state (for one component).
 This is the method of choice for under-determined equations::
@@ -107,7 +107,7 @@ This is the method of choice for under-determined equations::
     >>> phis = solve(rs2.g[0], rs2.phi[0])
     >>> rs2.eval_at_phis(phis)
     >>> print list(rs2.phis), rs2.g[0] == 0
-    [l/(eta*k + k)] True
+    [l/(k*(eta + 1))] True
 
 Check if the Jacobian has eigenvalues with negative real part::
 
@@ -122,7 +122,7 @@ Taylor coefficients and theta symbol::
     >>> list(rs1.eval_symbol('A', (1,)))
     [-k]
     >>> list(rs1.eval_symbol('B', ()))
-    [2**(1/2)*l**(1/2)]
+    [sqrt(2)*sqrt(l)]
     >>> list(rs1.eval_symbol('C', ((1, 1), (1, 2))))
     [l/(2*k)]
     >>> list(rs1.theta_R( ( (((1,1),(1,1)), ((1,1),(1,2))), 1) ))
@@ -136,7 +136,7 @@ Numerical evaluation (only once or always make a copy)::
     >>> copy = rs1.copy()
     >>> rs1.num_eval({'k': 5, 'l': 3}, ifevalf=False)
     >>> print list(rs1.A), list(rs1.B), list(rs1.DM), list(rs1.phis)
-    [-5*eta - 5] [6**(1/2)] [6] [3/(5*eta + 5)]
+    [-5*eta - 5] [sqrt(6)] [6] [3/(5*(eta + 1))]
     >>> list(rs1.eval_symbol('C', ((1, 1), (1, 2))))
     [3/10]
     >>> list(copy.eval_symbol('C', ((1, 1), (1, 2))))
@@ -205,8 +205,9 @@ ReactionSystem::
 
     >>> rs = ReactionSystem({'phi': phi, 'eta': eta, 'S': S, 'f': f})
     >>> rs.f
-    [                l]
-    [k*phi1*(eta1 + 1)]
+    Matrix([
+    [                l],
+    [k*phi1*(eta1 + 1)]])
     >>> rs.C
     >>> rs.eval_at_phis(phis, C_attempt=True)
     >>> list(rs.C)
@@ -242,11 +243,11 @@ System definition::
     A =
         [-k*(eta + 1)]
     B =
-        [(k*phi*(eta + 1) + l)**(1/2)]
+        [sqrt(k*phi*(eta + 1) + l)]
     DM =
         [k*phi*(eta + 1) + l]
     C =
-        [(...)**(1/2)*(...)**(1/2)/(k*(eta__1 + eta__2 + 2))]
+        [sqrt(...)*sqrt(...)/(k*(eta__1 + eta__2 + 2))]
 
 Some newly created objects::
 
@@ -269,7 +270,7 @@ Taylor coefficients before stationary state evaluation::
     >>> list(rs.eval_symbol('C', ()))
     [(k*phi + l)/(2*k)]
     >>> list(rs.eval_symbol('B', ()))
-    [(k*phi + l)**(1/2)]
+    [sqrt(k*phi + l)]
 
 Failing stationary state evaluation::
 
@@ -283,11 +284,11 @@ After the previous evaluation we have to recreate rs::
     >>> rs.eval_at_phis(solver=simple_solve, verbose=True)
     === eval_at_phis ===
     phis =
-        [l/(eta*k + k)]
+        [l/(k*(eta + 1))]
     A =
         [-k*(eta + 1)]
     B =
-        [2**(1/2)*l**(1/2)]
+        [sqrt(2)*sqrt(l)]
     DM =
         [2*l]
     C =
@@ -301,11 +302,11 @@ Numerical evaluation with additional map_dict entry::
     ... ifevalf=False, verbose=True)
     === num_eval ===
     phis =
-        [3/(5*eta + 5)]
+        [3/(5*(eta + 1))]
     A =
         [-5*eta - 5]
     B =
-        [6**(1/2)]
+        [sqrt(6)]
     DM =
         [6]
     C =
@@ -417,5 +418,5 @@ Numerical evaluation and check of eigenvalues with partial_sums()::
     >>> partial_sums(0, -1, -1, rs,
     ...         num_dict={'K': 0, 'k': 1, 'l': 2, 'epsilon': 0.01},
     ...         check_eigenvalues=True)
-    {'mean_0': [2.0]}
+    {'mean_0': Matrix([[2.0]])}
 
