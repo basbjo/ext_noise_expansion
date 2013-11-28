@@ -423,6 +423,11 @@ Numerical evaluation and check of eigenvalues with partial_sums()::
 
     >>> partial_sums(0, -1, -1, rs,
     ...         num_dict={'K': 0, 'k': 1, 'l': 2, 'epsilon': 0.01},
-    ...         check_eigenvalues=True)
+    ...         check_eigenvalues=True) # mean(u=0)
     {'mean_0': Matrix([[2.0]])}
+
+    >>> psums = partial_sums(-1, 1, -1, rs, termsimp=matsimp,
+    ...         varsimp=True, check_eigenvalues=True)
+    >>> list(psums['var_1']) # var(u=0) + var(u=1)
+    [epsilon**2*l*(Omega*l + k)/(Omega*k**2) + l/(Omega*k)]
 

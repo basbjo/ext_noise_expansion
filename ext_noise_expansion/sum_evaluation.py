@@ -55,7 +55,7 @@ from . import sum_parsing as parse
 
 #=========================================
 # evaluation of several partial sums
-def partial_sums(umax_mean, umax_var, umax_spec, system,
+def partial_sums(umax_mean, umax_var, umax_spec, system, termsimp=None,
         num_dict=None, ifevalf=None, map_dict=True, solver=None, select=0,
         varsimp=False, chop_imag=None, check_eigenvalues=False,
         covariances=True, off_diagonals=False):
@@ -68,6 +68,8 @@ def partial_sums(umax_mean, umax_var, umax_spec, system,
         - `umax_var`:  maximum 'u' for partial sums of the variance
         - `umax_spec`: maximum 'u' for partial sums of the spectrum
         - `system`:    instance of ReactionSystem[Base]
+        - `termsimp`: function to simplify the terms of each order u
+                      (optional; not applied to 'var' and 'spec')
         - `num_dict`: dictionary with substitutions, e.g. {'k': 5};
         - `ifevalf`:  if '.evalf()' is applied: True, False or None where
                       the latter implies True for non-empty 'num_dict'
@@ -113,6 +115,9 @@ def partial_sums(umax_mean, umax_var, umax_spec, system,
     """
     results = {}
     copy = system.copy()
+    if not termsimp:
+        def termsimp(arg):
+            return arg
 
     # numerical evaluation
     if num_dict:
@@ -134,23 +139,23 @@ def partial_sums(umax_mean, umax_var, umax_spec, system,
 
     # mean
     for u in range(umax_mean+1):
-        value = N(mean(u, copy, ifevalf=ifevalf))
+        value = termsimp(N(mean(u, copy, ifevalf=ifevalf)))
         if u > 0:
             value += results['mean_'+str(u-1)]
         results.update({'mean_'+str(u): value})
 
     # variances
     for u in range(umax_var+1):
-        valuephis = N(variance_phis(u, copy, ifevalf=ifevalf,
-                covariances=covariances))
-        valuexi = N(variance_xi(u, copy, ifevalf=ifevalf,
-            chop_imag=chop_imag, covariances=covariances))
+        valuephis = termsimp(N(variance_phis(u, copy, ifevalf=ifevalf,
+                covariances=covariances)))
+        valuexi = termsimp(N(variance_xi(u, copy, ifevalf=ifevalf,
+            chop_imag=chop_imag, covariances=covariances)))
         both = valuephis + valuexi
         if varsimp:
             both = both.expand().applyfunc(lambda i:
                     collect(i, copy.etavars))
-        if not ifevalf and varsimp:
-            both = both.applyfunc(factor)
+            if not ifevalf:
+                both = both.applyfunc(factor)
         if u > 0:
             valuexi += results['varxi_'+str(u-1)]
             valuephis += results['varphis_'+str(u-1)]
@@ -161,10 +166,10 @@ def partial_sums(umax_mean, umax_var, umax_spec, system,
 
     # spectrum
     for u in range(umax_spec+1):
-        valueext = N(spectrum_ext(u, copy, ifevalf=ifevalf,
-                off_diagonals=off_diagonals))
-        valueint = N(spectrum_int(u, copy, ifevalf=ifevalf,
-                chop_imag=chop_imag, off_diagonals=off_diagonals))
+        valueext = termsimp(N(spectrum_ext(u, copy, ifevalf=ifevalf,
+                off_diagonals=off_diagonals)))
+        valueint = termsimp(N(spectrum_int(u, copy, ifevalf=ifevalf,
+                chop_imag=chop_imag, off_diagonals=off_diagonals)))
         both = valueext + valueint
         if u > 0:
             valueint += results['specint_'+str(u-1)]
