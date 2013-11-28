@@ -218,7 +218,7 @@ Much more detailed output
 System definition::
 
     >>> rs = ReactionSystem.from_string(data, C_attempt=True,
-    ...     verbose=True, pretty=False) #doctest:+ELLIPSIS
+    ...     verbose=1) #doctest:+ELLIPSIS
     === string_parser ===
     The chemical network consists of
          1 component[s],
@@ -237,7 +237,7 @@ System definition::
     Macroscopic transition rates:
         [l]
         [k*phi*(eta + 1)]
-    === __init__ ===
+    === ReactionSystem ===
     g =
         [-k*phi*(eta + 1) + l]
     A =
@@ -281,7 +281,7 @@ After the previous evaluation we have to recreate rs::
 
     >>> rs = ReactionSystem.from_string(data, C_attempt=True)
 
-    >>> rs.eval_at_phis(solver=simple_solve, verbose=True)
+    >>> rs.eval_at_phis(solver=simple_solve, verbose=1)
     === eval_at_phis ===
     phis =
         [l/(k*(eta + 1))]
@@ -299,7 +299,7 @@ Numerical evaluation with additional map_dict entry::
     >>> from sympy import Rational
     >>> rs.num_eval({'k': 5, 'l': 3, 'K1': 7, 'eps1': Rational(1,10)},
     ... map_dict={'eps1': Symbol('epsilon1', positive=True)},
-    ... ifevalf=False, verbose=True)
+    ... ifevalf=False, verbose=1)
     === num_eval ===
     phis =
         [3/(5*(eta + 1))]

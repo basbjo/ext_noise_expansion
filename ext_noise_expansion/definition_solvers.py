@@ -8,7 +8,7 @@ from sympy import Matrix, solve
 from .tools_sympy import def_nprint
 
 #-----------------------------------------
-def simple_solve(g, phi, select=None, pretty=False):
+def simple_solve(g, phi, select=None, verbose=1):
     """
     Solve g(phi) = 0 by solving g_i(phi_i) = 0 iteratively.
     Negative solutions are dropped if possible.
@@ -18,7 +18,7 @@ def simple_solve(g, phi, select=None, pretty=False):
         - `phi`: Matrix of components of phi, e.g. Matrix([phi1, phi2])
         - `select`: integer to select the solution if ambiguous; if select
                     is not an integer, it will be obtained from user input
-        - `pretty`: use pprint instead of print when asking for user input
+        - `verbose`: use pprint instead of print when asking for user input
 
     :Raises: `IndexError` if select is out of range.
 
@@ -68,7 +68,7 @@ def simple_solve(g, phi, select=None, pretty=False):
     else:
         # print solutions
         print("There is more than one solution:\n")
-        nprint = def_nprint(pretty)
+        nprint = def_nprint(verbose)
         for i, solution in enumerate(solutions):
             print("%3d:" % i)
             nprint(solution.evalf())

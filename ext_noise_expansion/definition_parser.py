@@ -52,18 +52,18 @@ def _all_symbols(expr_list, symbol_list=None):
         return _all_symbols(new_list, symbol_list)
 
 #-----------------------------------------
-def _print_out(data, func=None, pretty=False):
+def _print_out(data, func=None, verbose=1):
     """
     Print information that has been obtained.
     """
-    nprint = def_nprint(pretty, indent=4)
+    nprint = def_nprint(verbose, indent=4)
     if func:
         print("=== %s ===" % func)
     print("The chemical network consists of")
     print("%6d component[s]," % data['N'])
     print("%6d reactions and" % data['R'])
     print("%6d extrinsic stochastic variable[s]." % data['M'])
-    if pretty:
+    if verbose > 1:
         print('')
     print('Concentrations of the components:')
     nprint(data['phi'])
@@ -79,7 +79,7 @@ def _print_out(data, func=None, pretty=False):
     nprint(data['f'])
 
 #-----------------------------------------
-def string_parser(data=None, yaml_file=None, verbose=False, pretty=False):
+def string_parser(data=None, yaml_file=None, verbose=0):
     """
     Generate a data dictionary for the ReactionSystem class from defining
     strings.  ReactionSystem.from_string() uses this function.
@@ -87,8 +87,8 @@ def string_parser(data=None, yaml_file=None, verbose=False, pretty=False):
     :Parameters:
         - `data`: dictionary of strings
         - `yaml_file`: yaml file defining a dictionary of strings
-        - `verbose`: print the obtained system definition
-        - `pretty`: use pprint instead of print
+        - `verbose`: print the obtained system definition (0: not at all,
+                or with 1: print, 2: sympy pprint, 3: IPython display)
 
     The keys 'concentrations', 'extrinsic_variables', 'transition_rates'
     and 'stoichiometric_matrix' are required and may in part be defined by
@@ -110,7 +110,7 @@ def string_parser(data=None, yaml_file=None, verbose=False, pretty=False):
             ...         'stoichiometric_matrix': [[1, -1]],
             ...         'transition_rates': ['l', 'k*(1 + eta)*phi'],
             ...         'frequency': 'omega', 'system_size': 'Omega'}
-            >>> data = string_parser(data, verbose=True)
+            >>> data = string_parser(data, verbose=1)
             === string_parser ===
             The chemical network consists of
                  1 component[s],
@@ -209,11 +209,11 @@ def string_parser(data=None, yaml_file=None, verbose=False, pretty=False):
         map_dict.update({string: new_symbol})
     f = Matrix([i.subs(to_pos_dict) for i in f])
 
-    # build dictionary and print out if verbose=True
+    # build dictionary and print out if verbose
     newdata.update({'f': f, 'map_dict': map_dict})
-    verbosedata = newdata.copy()
-    verbosedata.update({'N': N, 'M': M, 'R': R})
-    if verbose or pretty:
-        _print_out(verbosedata, 'string_parser', pretty)
+    if verbose:
+        verbosedata = newdata.copy()
+        verbosedata.update({'N': N, 'M': M, 'R': R})
+        _print_out(verbosedata, 'string_parser', verbose)
     return newdata
 

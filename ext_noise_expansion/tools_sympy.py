@@ -4,7 +4,7 @@
 Helper functions specific for symbolic python.
 """
 
-from sympy import Matrix, eye, Number, pprint
+from sympy import Matrix, eye, Number
 from sympy.core.add import Add
 from sympy.ntheory.multinomial import multinomial_coefficients
 
@@ -374,19 +374,15 @@ def inner_sum_indices(u, n):
 #=========================================
 # misc
 #-----------------------------------------
-def def_nprint(pretty, indent=6):
+def def_nprint(verbose, indent=6):
     """
-    Define a print function using pprint if pretty or print if not.
-    If print is used, insert indentation of indent space characters.
+    Define a print function using print if verbose=1, sympy pprint
+    if verbose=2 or IPython display if verbose=3.  If print is used,
+    indentation of indent space characters is inserted..
 
     :Returns: print function
     """
-    if pretty:
-        def nprint(i):
-            """pretty print"""
-            pprint(i)
-            print('')
-    else:
+    if verbose == 1:
         def nprint(i):
             """default print"""
             if i:
@@ -396,6 +392,20 @@ def def_nprint(pretty, indent=6):
                     print(" "*indent + str(line))
             elif i == None:
                 print(" "*indent + "None")
+    elif verbose == 2:
+        def nprint(i):
+            """pretty print"""
+            from sympy import pprint
+            pprint(i)
+            print('')
+    elif verbose == 3:
+        def nprint(i):
+            """display print"""
+            from IPython.display import display
+            display(i)
+            print('')
+    else:
+        raise ValueError("'verbose' must be 1, 2 or 3, is: %s" % verbose)
     return nprint
 
 def def_N(ifevalf):

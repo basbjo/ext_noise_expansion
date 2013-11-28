@@ -393,7 +393,7 @@ class ReactionSystem(ReactionSystemBase):
 
     #-----------------------------------------
     def __init__(self, data, map_dict=False, C_attempt=False,
-            omega=FREQ, Omega=SIZE, verbose=False, pretty=False):
+            omega=FREQ, Omega=SIZE, verbose=0):
         """
         Class to define a reaction system and calculate Taylor coefficients.
         The matrices 'A' and, if possible, 'C' as well as intermediate results
@@ -408,8 +408,8 @@ class ReactionSystem(ReactionSystemBase):
                     unnecessarily time consuming.
             - `omega`: frequency symbol string for the spectrum
             - `Omega`: symbol string for the system size parameter
-            - `verbose`: print phis, A, B, DM and C
-            - `pretty`: use pprint instead of print
+            - `verbose`: print phis, A, B, DM and C (0: not at all, or
+                    with 1: print, 2: sympy pprint, 3: IPython display)
 
         The following keys are accepted in 'data' (see DATA_KEYS).
             - `phi`:  Vector of symbols for macroscopic concentrations
@@ -561,21 +561,20 @@ class ReactionSystem(ReactionSystemBase):
         else:
             # instead the Taylor coefficients will be calculated if needed
             self.C = None
-        if verbose or pretty:
-            self.print_out("__init__", pretty)
+        if verbose:
+            self.print_out("ReactionSystem", verbose)
 
     #-----------------------------------------
     @staticmethod
-    def from_string(data=None, yaml_file=None, C_attempt=False,
-            verbose=False, pretty=False):
+    def from_string(data=None, yaml_file=None, C_attempt=False, verbose=0):
         """
         Create object from strings in a dictionary or file.
         
         :Parameters:
             - `data`: dictionary of strings
             - `yaml_file`: yaml file defining a dictionary of strings
-            - `verbose`: print the obtained system definition
-            - `pretty`: use pprint instead of print
+            - `verbose`: print the obtained system definition (0: not at all,
+                    or with 1: print, 2: sympy pprint, 3: IPython display)
 
         The keys 'concentrations', 'extrinsic_variables', 'transition_rates'
         and 'stoichiometric_matrix' are required and may in part defined by
@@ -588,10 +587,8 @@ class ReactionSystem(ReactionSystemBase):
         :Example:
             see module docstring
         """
-        data = string_parser(data=data, yaml_file=yaml_file,
-                verbose=verbose, pretty=pretty)
-        return ReactionSystem(data, C_attempt=C_attempt,
-                verbose=verbose, pretty=pretty)
+        data = string_parser(data=data, yaml_file=yaml_file, verbose=verbose)
+        return ReactionSystem(data, C_attempt=C_attempt, verbose=verbose)
 
     #-----------------------------------------
     def copy(self):
@@ -606,7 +603,7 @@ class ReactionSystem(ReactionSystemBase):
 
     #-----------------------------------------
     def eval_at_phis(self, phis=None, solver=None, select=None,
-             C_attempt=False, verbose=False, pretty=False):
+            C_attempt=False, verbose=0):
         """
         Substitute concentrations phi by phis.
         A warning is printed if g(phis) is not zero.
@@ -624,8 +621,8 @@ class ReactionSystem(ReactionSystemBase):
                     This is forced, if the object was created with the
                     option C_attempt=True.  The calculation is in general
                     not possible and may be unnecessarily time consuming.
-            - `verbose`: print phis, A, B, DM and C
-            - `pretty`: use pprint instead of print
+            - `verbose`: print phis, A, B, DM and C (0: not at all, or
+                    with 1: print, 2: sympy pprint, 3: IPython display)
         """
         if solver:
             if self.phis:
@@ -685,13 +682,13 @@ class ReactionSystem(ReactionSystemBase):
         # check if g is zero
         if self.g.norm() != 0:
             print("WARNING: g seems not to be zero in stationary state.")
-            verbose = False
-        if verbose or pretty:
-            self.print_out("eval_at_phis", pretty)
+            verbose = 0
+        if verbose:
+            self.print_out("eval_at_phis", verbose)
 
     #-----------------------------------------
     def num_eval(self, num_dict, map_dict=True, C_attempt=False,
-            ifevalf=True, verbose=False, pretty=False):
+            ifevalf=True, verbose=0):
         """
         Numerical evaluation.
 
@@ -708,8 +705,8 @@ class ReactionSystem(ReactionSystemBase):
                     the option C_attempt=True.  The calculation is in general
                     not possible and may be unnecessarily time consuming.
             - `ifevalf`: apply .evalf() after numerical substitution or not
-            - `verbose`: print phis, A, B, DM and C
-            - `pretty`: use pprint instead of print
+            - `verbose`: print phis, A, B, DM and C (0: not at all, or
+                    with 1: print, 2: sympy pprint, 3: IPython display)
 
         :Example: see module docstring
         """
@@ -753,8 +750,8 @@ class ReactionSystem(ReactionSystemBase):
             if self.C:
                 self.C = matsimp(N(self.C))
                 self.C_attempt = True
-        if verbose or pretty:
-            self.print_out("num_eval", pretty)
+        if verbose:
+            self.print_out("num_eval", verbose)
 
     #-----------------------------------------
     def check_eigenvalues(self, verbose=True):
@@ -781,15 +778,16 @@ class ReactionSystem(ReactionSystemBase):
         return eigenvalues
 
     #-----------------------------------------
-    def print_out(self, header=None, pretty=False):
+    def print_out(self, header=None, verbose=1):
         """
         Print phis, A, B, DM and, if existing, C.
 
         :Parameters:
             - `header`: optionally print a header
-            - `pretty`: use pprint instead of print
+            - `verbose`: use different print functions (1: use print,
+                    2: use sympy pprint, 3: use IPython display)
         """
-        nprint = def_nprint(pretty, indent=4)
+        nprint = def_nprint(verbose, indent=4)
         if header:
             print("=== %s ===" % header)
         if self.phis:
