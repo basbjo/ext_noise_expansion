@@ -85,6 +85,12 @@ System definition with a dictionary:
     >>> rs2.DM == rs1.DM
     True
 
+ all symbols are available in a dictionary and as attributes::
+    >>> rs1.map_dict #doctest:+ELLIPSIS
+    {'phi': phi, ... 'l': l, 'eta': eta, 'Omega': Omega, 'k': k}
+    >>> rs1.map_dict['l'] == rs1.s.l
+    True
+
  etavars and etaKs are created if missing in data::
 
     >>> print list(rs2.etaKs), list(rs2.etavars)

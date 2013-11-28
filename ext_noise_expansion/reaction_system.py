@@ -402,7 +402,9 @@ class ReactionSystem(ReactionSystemBase):
         :Parameters:
             - `data`: Dictionary that defines the reaction system.
             - `map_dict`: Optional dictionary to map strings to symbols.
-                    May as well be added to the 'data' dictionary.
+                    It may also be added to the 'data' dictionary.  It is
+                    created automatically by the self.from_string() method.
+                    The key/value pairs are also mapped to self.s.key.
             - `C_attempt`: If True, the calculation of C is attempted.
                     This is in general not possible and may be
                     unnecessarily time consuming.
@@ -485,6 +487,15 @@ class ReactionSystem(ReactionSystemBase):
             self.map_dict.update({symbol.name: symbol})
         # map_dict has priority
         self.map_dict.update(map_dict)
+        # make key/symbol pairs available as self.s.key
+        class s(object):
+            """
+            class with symbol attributes
+            """
+            def __init__(self,dictionary):
+                for key, value in dictionary.items():
+                    setattr(self, key, value)
+        self.s = s(map_dict)
 
         # dictionaries for eta with and without upper indices
         ReactionSystemBase._update_eta_dicts(self)
@@ -699,7 +710,7 @@ class ReactionSystem(ReactionSystemBase):
             - `num_dict`: dictionary with substitutions, e.g. {'k': 5} or {k: 5}
             - `map_dict`: optional dictionary to map string num_dict-keys to
                     symbols; set to False or None to avoid using self.map_dict
-                    which is automatically created by self.from_string())
+                    which is automatically created by self.from_string()
             - `C_attempt`: If True, the calculation of C is attempted.
                     This is forced, if the ReactionSystem was called with
                     the option C_attempt=True.  The calculation is in general
