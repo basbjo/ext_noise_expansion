@@ -774,7 +774,8 @@ class ReactionSystem(ReactionSystemBase):
         for value, mult in self.eval_symbol('A', ()).eigenvals().items():
             eigenvalues += [value]*mult
         if verbose:
-            print("The eigenvalues of the Jacobian A are %s" % eigenvalues)
+            print("The eigenvalues of the Jacobian A are %s" %
+                    str([eigval.evalf() for eigval in eigenvalues]))
             print("for vanishing extrinsic fluctuations.")
         pos_real_part = False
         try:
