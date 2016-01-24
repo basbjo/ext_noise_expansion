@@ -71,7 +71,6 @@ class DummySymbol(Matrix):
             indices = (0, 0)
         matrix = [Symbol(label+str(list(indices)), positive=True)]
         self.eta_dict = eta_dict
-        Matrix.__init__(self, matrix)
         self.label = label
         if indices == (0,) or indices == (0, 0):
             self.ind = ()
