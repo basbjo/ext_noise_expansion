@@ -451,7 +451,7 @@ def eval_spectrum_int(gen, system=ReactionSystemBase(1), together=True,
                 part *= system.eval_symbol('A', A_ind)/factorial(len(A_ind))
             part *= system.eval_symbol('C', C_ind,
                     chop_imag=chop_imag)/factorial(len(C_ind))
-            part = matsimp(part, system.omega)
+            part = matsimp(part, system.omega, factorize=system.factorize)
             # append None which will be omitted by sort_merge
             yield [ part, theta_ind, None]
 
@@ -472,7 +472,7 @@ def eval_spectrum_int(gen, system=ReactionSystemBase(1), together=True,
                 # add complex conjugate transpose
                 part += part.transpose().conjugate()
                 part /= (2 * system.pi * system.Omega)
-                part = matsimp(part, system.omega)
+                part = matsimp(part, system.omega, factorize=system.factorize)
             # the same for the diagonal elements (omit small imaginary parts)
             for i, item in enumerate(diagonal):
                 terms = []
@@ -480,7 +480,8 @@ def eval_spectrum_int(gen, system=ReactionSystemBase(1), together=True,
                     term += term.conjugate()
                     term /= (2 * system.pi * system.Omega)
                     # together and numer/denom simplification:
-                    term = matsimp(Matrix([term]), chop_imag=True)[0]
+                    term = matsimp(Matrix([term]), chop_imag=True,
+                            factorize=system.factorize)[0]
                     terms.append(term)
                 diagonal[i] = sum(terms)
             # put everything together and simplify
@@ -511,7 +512,7 @@ def eval_spectrum_int(gen, system=ReactionSystemBase(1), together=True,
             #    are identical except for a power
             for part, _ in sort_merge(merge_yield(gen)):
                 # third_key was omitted as _
-                yield N(matsimp(part, system.omega))
+                yield N(matsimp(part, system.omega, factorize=system.factorize))
         else:
             # omit third evaluation
             for part, _, _ in gen:
@@ -582,7 +583,7 @@ def eval_spectrum_ext(gen, system=ReactionSystemBase(1),
             part *= system.eval_symbol('phis', r2_ind).T
             if not off_diagonals:
                 part = Matrix([part[i, i] for i in range(part.rows)])
-            part = matsimp(part)
+            part = matsimp(part, factorize=system.factorize)
             # append None which will be omitted by sort_merge
             yield [ part, Theta_ind, None]
     def second_eval(gen):

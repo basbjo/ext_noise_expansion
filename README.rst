@@ -42,3 +42,6 @@ Test::
 
     python ./setup.py test
 
+Issues:
+    - The ``ReactionSystem`` flag ``factorize=True`` is combination with
+      usage of the ``num_eval()`` method may lead to wrong results.

@@ -106,7 +106,7 @@ class ReactionSystemBase(object):
     Basic class to define a reaction system and calculate Taylor
     coefficients.
     """
-    def __init__(self, M, omega=FREQ, Omega=SIZE):
+    def __init__(self, M, omega=FREQ, Omega=SIZE, factorize=True):
         """
         Basic class to define a reaction system and calculate Taylor
         coefficients.  It can be used to create symbolical output.
@@ -116,6 +116,7 @@ class ReactionSystemBase(object):
             - `pi`: symbol for pi
             - `omega`: frequency symbol string for the spectrum
             - `Omega`: symbol string for the system size parameter
+            - `factorize`: factorize terms with factor() function
 
         :Raises: `ValueError` if M is not a positive integer
 
@@ -128,6 +129,7 @@ class ReactionSystemBase(object):
         self.pi = pi
         self.omega = Symbol(omega, positive=True) # frequency symbol
         self.Omega = Symbol(Omega, positive=True) # symbol for the system size
+        self.factorize = factorize # flag if some terms will be factorized
         self.eta = [] # stochastic variables
         self.etavars = [] # variances
         self.etaKs = [] # inverse correlations times
@@ -392,7 +394,7 @@ class ReactionSystem(ReactionSystemBase):
     _EVAL = ["eta", "S", "f", "g", "A", "C", "B", "DM"]
 
     #-----------------------------------------
-    def __init__(self, data, map_dict=False, C_attempt=False,
+    def __init__(self, data, map_dict=False, C_attempt=False, factorize=False,
             omega=FREQ, Omega=SIZE, verbose=0):
         """
         Class to define a reaction system and calculate Taylor coefficients.
@@ -408,6 +410,7 @@ class ReactionSystem(ReactionSystemBase):
             - `C_attempt`: If True, the calculation of C is attempted.
                     This is in general not possible and may be
                     unnecessarily time consuming.
+            - `factorize`: factorize terms with factor() function
             - `omega`: frequency symbol string for the spectrum
             - `Omega`: symbol string for the system size parameter
             - `verbose`: print phis, A, B, DM and C (0: not at all, or
@@ -450,7 +453,8 @@ class ReactionSystem(ReactionSystemBase):
         for key in data.keys():
             if not key in DATA_KEYS:
                 raise DefinitionError("Key '%s' is not recognized." % key)
-        ReactionSystemBase.__init__(self, len(eta), omega=omega, Omega=Omega)
+        ReactionSystemBase.__init__(self, len(eta), omega=omega,
+                Omega=Omega, factorize=factorize)
         self.phis = None
         self.eta = eta
         self.C_attempt = C_attempt
@@ -568,7 +572,7 @@ class ReactionSystem(ReactionSystemBase):
         if self.C_attempt:
             self.C = _lyapunov_equation_C(self, self.A, self.B)
             if self.C:
-                self.C = matsimp(self.C)
+                self.C = matsimp(self.C, factorize=self.factorize)
         else:
             # instead the Taylor coefficients will be calculated if needed
             self.C = None
@@ -577,13 +581,18 @@ class ReactionSystem(ReactionSystemBase):
 
     #-----------------------------------------
     @staticmethod
-    def from_string(data=None, yaml_file=None, C_attempt=False, verbose=0):
+    def from_string(data=None, yaml_file=None, C_attempt=False,
+            factorize=False, verbose=0):
         """
         Create object from strings in a dictionary or file.
         
         :Parameters:
             - `data`: dictionary of strings
             - `yaml_file`: yaml file defining a dictionary of strings
+            - `C_attempt`: If True, the calculation of C is attempted.
+                    This is in general not possible and may be
+                    unnecessarily time consuming.
+            - `factorize`: factorize terms with factor() function
             - `verbose`: print the obtained system definition (0: not at all,
                     or with 1: print, 2: sympy pprint, 3: IPython display)
 
@@ -599,7 +608,8 @@ class ReactionSystem(ReactionSystemBase):
             see module docstring
         """
         data = string_parser(data=data, yaml_file=yaml_file, verbose=verbose)
-        return ReactionSystem(data, C_attempt=C_attempt, verbose=verbose)
+        return ReactionSystem(data, C_attempt=C_attempt,
+                factorize=factorize, verbose=verbose)
 
     #-----------------------------------------
     def copy(self):
@@ -675,7 +685,7 @@ class ReactionSystem(ReactionSystemBase):
                     for j, phij in enumerate(self.phi):
                         matrix = getattr(self, label)
                         matrix = matsimp(matrix.subs({phij: self.phis[j]}),
-                                self.omega)
+                                self.omega, factorize=self.factorize)
                         setattr(self, label, matrix)
                 except AttributeError:
                     pass
@@ -687,7 +697,7 @@ class ReactionSystem(ReactionSystemBase):
             # definition: diploma thesis equation (3.30)
             self.C = _lyapunov_equation_C(self, self.A, self.B)
             if self.C:
-                self.C = matsimp(self.C)
+                self.C = matsimp(self.C, factorize=self.factorize)
                 self.C_attempt = True
 
         # check if g is zero
@@ -746,11 +756,11 @@ class ReactionSystem(ReactionSystemBase):
                     subs_dict.update({map_dict[key]: item})
                 except KeyError as args:
                     raise KeyError("Please add '%s' to 'map_dict'." % args)
-        self.f = matsimp(N(self.f.subs(subs_dict)))
-        self.g = matsimp(N(self.g.subs(subs_dict)))
-        self.A = matsimp(N(self.A.subs(subs_dict)))
-        self.B = matsimp(N(self.B.subs(subs_dict)))
-        self.DM = matsimp(N(self.DM.subs(subs_dict)))
+        self.f = matsimp(N(self.f.subs(subs_dict)), factorize=self.factorize)
+        self.g = matsimp(N(self.g.subs(subs_dict)), factorize=self.factorize)
+        self.A = matsimp(N(self.A.subs(subs_dict)), factorize=self.factorize)
+        self.B = matsimp(N(self.B.subs(subs_dict)), factorize=self.factorize)
+        self.DM = matsimp(N(self.DM.subs(subs_dict)), factorize=self.factorize)
         self.etavars = N(self.etavars.subs(subs_dict))
         self.etaKs   = N(self.etaKs.subs(subs_dict))
         self.Omega   = N(self.Omega.subs(subs_dict))
@@ -759,7 +769,7 @@ class ReactionSystem(ReactionSystemBase):
         if C_attempt or self.C_attempt:
             self.C = _lyapunov_equation_C(self, self.A, self.B)
             if self.C:
-                self.C = matsimp(N(self.C))
+                self.C = matsimp(N(self.C), factorize=self.factorize)
                 self.C_attempt = True
         if verbose:
             self.print_out("num_eval", verbose)

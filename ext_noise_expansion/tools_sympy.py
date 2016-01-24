@@ -57,11 +57,11 @@ def deep_factor(expr, omega):
     return new_expr
 
 #-----------------------------------------
-def matsimp(matrix, omega=None, chop_imag=False):
+def matsimp(matrix, omega=None, chop_imag=False, factorize=False):
     """
     Simplify all entries of a MutableMatrix m:
       - common denominator
-      - factorization in numerator and denominator
+      - optional factorization in numerator and denominator
 
     If a Symbol is given for omega, the function deep_factor() is
     called with omega as second argument.  If chop_imag, imaginary
@@ -78,11 +78,12 @@ def matsimp(matrix, omega=None, chop_imag=False):
         if chop_imag:
             numer = numer.as_real_imag()[0]
             denom = denom.as_real_imag()[0]
-        numer = numer.factor()
         # factorization
-        denom = denom.factor()
-        if omega:
-            denom = deep_factor(denom, omega)
+        if factorize:
+            numer = numer.factor()
+            denom = denom.factor()
+            if omega:
+                denom = deep_factor(denom, omega)
         # avoid [1|-1]*(...) in the numerator
         numer = [numer, numer.as_coeff_Mul()]
         if isinstance(numer[1][0], Number):
