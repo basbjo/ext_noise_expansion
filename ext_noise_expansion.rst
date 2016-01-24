@@ -43,7 +43,8 @@ The lecture of the following sections will be sufficient for basic usage.
 
 A short example::
     >>> from ext_noise_expansion import *
-    >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml')
+    >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml',
+    ...     factorize=True)
 
     >>> partial_sums(2, -1, 0, # maximum u for mean/variance/spectrum
     ...     rs, solver=simple_solve) #doctest: +NORMALIZE_WHITESPACE
@@ -65,12 +66,17 @@ System definition with a yaml file:
  system definition::
 
     >>> from ext_noise_expansion import ReactionSystem
-    >>> rs1 = ReactionSystem.from_string(yaml_file='test_system.yaml')
+    >>> rs1 = ReactionSystem.from_string(yaml_file='test_system.yaml',
+    ...     factorize=True)
     >>> print(list(rs1.A), list(rs1.B), list(rs1.DM))
     [-k*(eta + 1)] [sqrt(k*phi*(eta + 1) + l)] [k*phi*(eta + 1) + l]
 
  Use ``string_parser()`` to check definition files.
  See ``test_system.yaml`` for an example definition.
+
+ Use ``factorize=True`` to activate factorization for symbolic system
+ evaluation.  When ``num_eval()`` is used, choose ``factorize=False``:
+ The factorization of terms containing float values may be wrong!
 
 System definition with a dictionary:
 
@@ -209,7 +215,8 @@ Macroscopic stationary state::
 
 ReactionSystem::
 
-    >>> rs = ReactionSystem({'phi': phi, 'eta': eta, 'S': S, 'f': f})
+    >>> rs = ReactionSystem({'phi': phi, 'eta': eta, 'S': S, 'f': f},
+    ...     factorize=True)
     >>> rs.f
     Matrix([
     [                l],
@@ -224,7 +231,7 @@ Much more detailed output
 System definition::
 
     >>> rs = ReactionSystem.from_string(data, C_attempt=True,
-    ...     verbose=1) #doctest:+ELLIPSIS
+    ...     factorize=True, verbose=1) #doctest:+ELLIPSIS
     === string_parser ===
     The chemical network consists of
          1 component[s],
@@ -285,7 +292,7 @@ Failing stationary state evaluation::
 
 After the previous evaluation we have to recreate rs::
 
-    >>> rs = ReactionSystem.from_string(data, C_attempt=True)
+    >>> rs = ReactionSystem.from_string(data, C_attempt=True, factorize=True)
 
     >>> rs.eval_at_phis(solver=simple_solve, verbose=1)
     === eval_at_phis ===
@@ -330,7 +337,8 @@ Example definitions::
     >>> from sympy import O
     >>> from ext_noise_expansion import ReactionSystem, simple_solve
     >>> from ext_noise_expansion import sum_evaluation as evaluate
-    >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml')
+    >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml',
+    ...     factorize=True)
     >>> rs.eval_at_phis(solver=simple_solve) # stationary state
     >>> eigenvalues = rs.check_eigenvalues() # negative real parts?
     The eigenvalues of the Jacobian A are [-k]

@@ -23,7 +23,8 @@ and the module docstrings.
     System definition:
         >>> from ext_noise_expansion import ReactionSystem, simple_solve
         >>> from ext_noise_expansion import sum_evaluation as evaluate
-        >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml')
+        >>> rs = ReactionSystem.from_string(yaml_file='test_system.yaml',
+        ...     factorize=True)
         >>> rs.eval_at_phis(solver=simple_solve) # stationary state
         >>> eigenvalues = rs.check_eigenvalues()
         The eigenvalues of the Jacobian A are [-k]
