@@ -463,7 +463,7 @@ def eval_spectrum_int(gen, system=ReactionSystemBase(1), together=True,
         #  - add complex conjugate and simplify
         #  - divide by 2*pi
         for part, theta_ind in sort_merge(merge_yield(gen)):
-            part *= system.theta_R(theta_ind)
+            part = system.theta_R(theta_ind) * part
             # separate diagonal elements
             diagonal = [part[i, i] for i in range(part.rows)]
             for i in range(part.rows):
