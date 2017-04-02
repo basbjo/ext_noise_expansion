@@ -159,7 +159,7 @@ def lyapunov_equation_2(A1, A2, B):
     Returns Lyapunov matrix L such that
     A1 * L + L * A2.T + B = 0.
 
-    A and B must be square matrices.
+    A1, A2 and B must be square matrices.
 
     :Example:
         >>> from sympy import Matrix
