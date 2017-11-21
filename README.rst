@@ -3,7 +3,7 @@ ext_noise_expansion
 
 Linear noise approximation with slow extrinsic fluctuations.
 
-:Author:       Bjoern Bastian <basbjo at gmail dot com>
+:Author:       Bjoern Bastian <basbjo at posteo dot de>
 :Version:      beta
 :Requirements: Python >= 2.7 / 3.x, sympy >= 0.7.3, yaml
 
