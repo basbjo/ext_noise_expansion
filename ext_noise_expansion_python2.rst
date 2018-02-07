@@ -4,8 +4,8 @@
 ext_noise_expansion
 ===================
 
-:Author:    Bjoern Bastian (basbjo at gmail dot com)
-:Date:      2013-
+:Author:    Bjoern Bastian (bjoern.bastian@uibk.ac.at)
+:Date:      2018-02-07
 
 .. contents:: **Table of Contents**
 .. sectnum::

@@ -52,17 +52,16 @@ and the module docstrings.
         >>> evaluate.spectrum_ext(u=1, system=rs)[0]
         K*epsilon**2*l**2/(pi*k**2*(K**2 + omega**2))
 
-:Date:      2013-
-:Status:    beta version
+:Date:      2018-02-07
 
 :Requires:  Python >= 2.7 / 3.x (recommended), sympy, yaml
-:Author:    Bjoern Bastian (basbjo at gmail dot com)
+:Author:    Bjoern Bastian (bjoern.bastian@uibk.ac.at)
 :Copyright: Bjoern Bastian
 :License:   MIT/X11-like, see __license__
 """
-__version__ = "beta"
-__author__   = "Bjoern Bastian <basbjo at gmail dot com>"
-__license__  = """Copyright (c) 2013 by Bjoern Bastian
+__version__ = "1.0"
+__author__   = "Bjoern Bastian (bjoern.bastian@uibk.ac.at)"
+__license__  = """Copyright (c) 2013-2018 by Bjoern Bastian
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

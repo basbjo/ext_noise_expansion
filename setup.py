@@ -41,15 +41,13 @@ and time scale separation between intrinsic and extrinsic fluctuations.
     Genome Res, 13(11):2475--84, 2003.  doi: 10.1101/gr.1196503'''
 
 classifiers=[
-    "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: English",
-    #"Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Topic :: Scientific/Engineering",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Biology",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Scientific/Engineering :: Biology",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
     "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
@@ -109,16 +107,17 @@ class clean(Command):
         os.system("rm -rf ext_noise_expansion/__pycache__")
 
 setup(name='ext_noise_expansion',
-      version='beta',
+      version='1.0',
       description="Linear noise approximation with slow extrinsic "\
               +"fluctuations.",
       long_description=long_description,
       url="https://github.com/basbjo/ext_noise_expansion",
       author="Bjoern Bastian",
-      author_email="basbjo@posteo.de",
+      author_email="bjoern.bastian@uibk.ac.at",
       packages=['ext_noise_expansion'],
+      install_requires=['sympy', 'IPython'],
       scripts=[],
-      #platforms = ["any"],
+      platforms=["any"],
       license="MIT",
       cmdclass={'test': test,
                 'clean': clean,
