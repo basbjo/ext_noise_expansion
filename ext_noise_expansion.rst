@@ -21,6 +21,7 @@ expansion [1]_ is based on the linear noise approximation [2]_, [3]_ and time
 scale separation between intrinsic and extrinsic fluctuations.
 
 .. [1] Diploma thesis by Bjoern Bastian, University of Freiburg, 2013.
+    `web link`__
 .. [2] N.G. van Kampen.  Stochastic processes in physiscs and chemistry.
     Springer-Verlag, Elsevier Science Publishers, 2 edition, 1992.
     ISBN 0-444-89439-0.
@@ -28,6 +29,7 @@ scale separation between intrinsic and extrinsic fluctuations.
     biochemical networks with the linear noise approximation.
     Genome Res, 13(11):2475--84, 2003.  `doi: 10.1101/gr.1196503`__
 
+__ https://bbastian.pavo.uberspace.de/files/diploma/
 __ http://dx.doi.org/10.1101/gr.1196503
 
 
