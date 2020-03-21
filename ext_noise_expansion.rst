@@ -17,20 +17,25 @@ Description and references
 
 Approximately investigate the impact of slow extrinsic fluctuations in chemical
 reaction systems on the means, variances and spectrum matrix.  The series
-expansion [1]_ is based on the linear noise approximation [2]_, [3]_ and time
+expansion [1]_, [2]_ is based on the linear noise approximation [3]_, [4]_ and time
 scale separation between intrinsic and extrinsic fluctuations.
 
-.. [1] Diploma thesis by Bjoern Bastian, University of Freiburg, 2013.
-    `web link`__
-.. [2] N.G. van Kampen.  Stochastic processes in physiscs and chemistry.
+.. [1] E. M. Keizer, B. Bastian, R. W. Smith, R. Grima and C. Fleck.
+    *Extending the linear-noise approximation to biochemical systems influenced
+    by intrinsic noise and slow lognormally distributed extrinsic noise.*
+    Phys. Rev. E 99, 052417, 2019.  `doi: 10.1103/PhysRevE.99.052417`__
+.. [2] B. Bastian.  *Linear noise approximation with external variables.*
+    Diploma thesis, University of Freiburg, 2013.  `web link`__
+.. [3] N.G. van Kampen.  *Stochastic processes in physiscs and chemistry.*
     Springer-Verlag, Elsevier Science Publishers, 2 edition, 1992.
     ISBN 0-444-89439-0.
-.. [3] J. Elf and M. Ehrenberg.  Fast evaluation of fluctuations in
-    biochemical networks with the linear noise approximation.
+.. [4] J. Elf and M. Ehrenberg.  *Fast evaluation of fluctuations in
+    biochemical networks with the linear noise approximation.*
     Genome Res, 13(11):2475--84, 2003.  `doi: 10.1101/gr.1196503`__
 
-__ https://bbastian.pavo.uberspace.de/files/diploma/
-__ http://dx.doi.org/10.1101/gr.1196503
+__ https://doi.org/10.1103/PhysRevE.99.052417
+__ https://bop.uber.space/files/diploma/
+__ https://doi.org/10.1101/gr.1196503
 
 
 Quickstart
